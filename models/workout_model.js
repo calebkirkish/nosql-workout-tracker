@@ -31,7 +31,30 @@ const workoutSchema = new Schema({
             },
             sets: {
                 type: Number
+            },
+            distance: {
+                type: Number
             }
+
+
         }
+
     ]
-})
+},
+    {
+        toJSON: { // Adds a virtual property not stored in Mongo
+            virtuals: true
+        }
+    });
+
+
+workoutSchema.virtual('totalDuration').get(function () {
+    return this.exercises.reduce((total, exercise) => {
+        return total + exercise.duration;
+    }, 0);
+});
+
+
+const Workout = mongoose.model("Workout", workoutSchema);
+
+module.exports = Workout;
